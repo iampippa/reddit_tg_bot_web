@@ -5,7 +5,7 @@ import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
 
 const products = [
-        {id: '1', title: 'Amanda', price: 40, description: 'Синего цвета, прямые'},
+        {id: '1', title: 'Amanda', price: 40, description: 'Post Karma: 3214, Comment Karma: 312'},
     {id: '2', title: 'Julia', price: 40, description: 'Зеленого цвета, теплая'},
     {id: '3', title: 'Maria', price: 40, description: 'Синего цвета, прямые'},
     {id: '4', title: 'Anna', price: 40, description: 'Зеленого цвета, теплая'},
