@@ -65,11 +65,11 @@ const ProductList = () => {
             tg.MainButton.show();
             tg.MainButton.color = "#008000";
             tg.MainButton.setParams({
-                text: `Купить ${getTotalPrice(newItems)}`
+                text: `Посмотреть заказ`
             })
         }
     }
-
+// ${getTotalPrice(newItems)}
     return (
         <div className={'list'}>
             {products.map(item => (
