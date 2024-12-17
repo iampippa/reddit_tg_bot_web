@@ -63,7 +63,8 @@ const ProductList = () => {
             tg.MainButton.hide();
         } else {
             tg.MainButton.show();
-            tg.MainButton.color = "#008000";
+            tg.MainButton.color = "#29B54D";
+            tg.MainButton.hasShineEffect = true;
             tg.MainButton.setParams({
                 text: `Посмотреть заказ`
             })
