@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'; // Используем useRef для отслеживания состояния
+import React, { useEffect } from 'react';
 import './ProductList.css';
 import ProductItem from "../ProductItem/ProductItem";
 import { useTelegram } from "../../hooks/useTelegram";
@@ -17,33 +17,37 @@ const ProductList = () => {
     const { cartItems, totalPrice } = useCart();
     const navigate = useNavigate();
 
-    // Ref для отслеживания видимости кнопки
-    const isMainButtonInitialized = useRef(false);
-
     useEffect(() => {
-        // Проверяем, нужно ли что-то менять с MainButton
-        if (cartItems.length > 0) {
-            // Если кнопка ещё не была инициализирована — показываем её
-            if (!isMainButtonInitialized.current) {
+        const handleBackButton = () => {
+            // Обновляем состояние кнопки до полного рендера компонента
+            if (cartItems.length > 0) {
                 tg.MainButton.setParams({
                     text: `Посмотреть заказ (${totalPrice}$)`,
-                    color: "#29B54D",
+                    color: "#29B54D"
                 });
                 tg.MainButton.show();
-                isMainButtonInitialized.current = true; // Помечаем, что кнопка инициализирована
             } else {
-                // Обновляем текст, если кнопка уже видна
-                tg.MainButton.setParams({
-                    text: `Посмотреть заказ (${totalPrice}$)`
-                });
-            }
-        } else {
-            // Скрываем кнопку, только если она была инициализирована
-            if (isMainButtonInitialized.current) {
                 tg.MainButton.hide();
-                isMainButtonInitialized.current = false; // Сбрасываем состояние
             }
+        };
+
+        // Подписка на событие возврата назад
+        tg.onEvent('navigatorBackButtonClicked', handleBackButton);
+
+        // Убедимся, что при монтировании обновляется состояние кнопки сразу
+        if (cartItems.length > 0) {
+            tg.MainButton.setParams({
+                text: `Посмотреть заказ (${totalPrice}$)`,
+                color: "#29B54D"
+            });
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.hide();
         }
+
+        return () => {
+            tg.offEvent('navigatorBackButtonClicked', handleBackButton); // Убираем обработчик при размонтировании
+        };
     }, [cartItems, totalPrice, tg]);
 
     const onSendData = () => {
@@ -51,11 +55,10 @@ const ProductList = () => {
     };
 
     useEffect(() => {
-        // Обработка события нажатия кнопки
+        // Обработка клика по MainButton
         tg.onEvent('mainButtonClicked', onSendData);
-
         return () => {
-            // Удаляем обработчик при размонтировании компонента
+            // Убираем обработчик клика
             tg.offEvent('mainButtonClicked', onSendData);
         };
     }, [onSendData, tg]);
@@ -65,7 +68,7 @@ const ProductList = () => {
             {products.map((item) => (
                 <ProductItem
                     key={item.id}
-                    product={item} // Передача данных о продукте
+                    product={item}
                 />
             ))}
         </div>
