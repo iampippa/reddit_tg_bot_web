@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import './ProductList.css';
 import ProductItem from "../ProductItem/ProductItem";
 import { useTelegram } from "../../hooks/useTelegram";
-import { useCart } from '../../contexts/CartContext'; // Контекст корзины
+import { useCart } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 
 const products = [
@@ -17,54 +17,36 @@ const ProductList = () => {
     const { cartItems, totalPrice } = useCart();
     const navigate = useNavigate();
 
-    // Ref для отслеживания состояния кнопки
-    const isMainButtonInitialized = useRef(false);
-
     useEffect(() => {
-        if (cartItems.length > 0) {
-            // Если кнопка ещё не инициализирована — показываем её
-            if (!isMainButtonInitialized.current) {
+        // Обновляем MainButton, только если корзина готова (чтобы избежать дребезга)
+        const timeout = setTimeout(() => {
+            if (cartItems.length > 0) {
                 tg.MainButton.setParams({
                     text: `Посмотреть заказ (${totalPrice}$)`,
                     color: "#29B54D",
                 });
                 tg.MainButton.show();
-                isMainButtonInitialized.current = true; // Помечаем, что кнопка инициализирована
             } else {
-                // Обновляем текст, если кнопка уже видна
-                tg.MainButton.setParams({
-                    text: `Посмотреть заказ (${totalPrice}$)`
-                });
-            }
-        } else {
-            // Скрываем кнопку, только если она была инициализирована
-            if (isMainButtonInitialized.current) {
                 tg.MainButton.hide();
-                isMainButtonInitialized.current = false; // Сбрасываем состояние
             }
-        }
+        }, 50); // Задержка для исключения промежуточных состояний
+
+        return () => clearTimeout(timeout); // Очищаем таймаут при размонтировании
     }, [cartItems, totalPrice, tg]);
 
-    const onSendData = () => {
-        navigate('/checkout'); // Переход на страницу Checkout
-    };
-
     useEffect(() => {
-        // Обработка события нажатия кнопки
-        tg.onEvent('mainButtonClicked', onSendData);
-
+        tg.onEvent('mainButtonClicked', () => navigate('/checkout'));
         return () => {
-            // Удаляем обработчик при размонтировании компонента
-            tg.offEvent('mainButtonClicked', onSendData);
+            tg.offEvent('mainButtonClicked', () => navigate('/checkout'));
         };
-    }, [onSendData, tg]);
+    }, [tg, navigate]);
 
     return (
         <div className="list">
             {products.map((item) => (
                 <ProductItem
                     key={item.id}
-                    product={item} // Передача данных о продукте
+                    product={item}
                 />
             ))}
         </div>
