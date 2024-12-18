@@ -14,28 +14,34 @@ const products = [
 
 const ProductList = () => {
     const { tg } = useTelegram();
-    const { cartItems, totalPrice } = useCart();
+    const { cartItems, totalPrice } = useCart(); // Получаем список товаров в корзине и итоговую сумму
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (cartItems.length === 0) {
-            tg.MainButton.hide();
-        } else {
+        // Обновляем текст и параметры кнопки при изменении корзины
+        tg.MainButton.setParams({
+            text: cartItems.length > 0 ? `Посмотреть заказ (${totalPrice}$)` : "Корзина пустая",
+            color: "#29B54D",
+        });
+
+        // Показываем кнопку, если её ещё нет
+        if (!tg.MainButton.isVisible) {
             tg.MainButton.show();
-            tg.MainButton.setParams({
-                text: `Посмотреть заказ (${totalPrice}$)`,
-                color: "#29B54D",
-            });
         }
+
     }, [cartItems, totalPrice, tg]);
 
     const onSendData = () => {
-        navigate('/checkout');
+        navigate('/checkout'); // Переход к странице завершения покупки
     };
 
     useEffect(() => {
+        // Обработка клика на MainButton
         tg.onEvent('mainButtonClicked', onSendData);
-        return () => tg.offEvent('mainButtonClicked', onSendData);
+
+        return () => {
+            tg.offEvent('mainButtonClicked', onSendData); // Очищаем обработчик при размонтировании
+        };
     }, [onSendData, tg]);
 
     return (
@@ -43,7 +49,7 @@ const ProductList = () => {
             {products.map((item) => (
                 <ProductItem
                     key={item.id}
-                    product={item} // Передача данных о продукте
+                    product={item} // Передача данных о каждом продукте
                 />
             ))}
         </div>
