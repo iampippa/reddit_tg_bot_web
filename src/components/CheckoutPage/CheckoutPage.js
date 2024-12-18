@@ -1,66 +1,47 @@
 import React, { useEffect } from 'react';
-import './CheckoutPage.css';
-import { useTelegram } from '../../hooks/useTelegram';
-import { useNavigate } from 'react-router-dom'; // Для перехода между страницами
-import { useCart } from '../../contexts/CartContext';
+import { useTelegram } from "../../hooks/useTelegram";
+import { useCart } from "../../contexts/CartContext";
+import { useNavigate } from "react-router-dom"; // Для навигации
+import './Checkout.css'; // Подключаем стили
 
-const CheckoutPage = () => {
+const Checkout = () => {
     const { tg } = useTelegram();
-    const navigate = useNavigate(); // Хук для переходов
-    const { cartItems, totalPrice } = useCart(); // Получаем товары и сумму из контекста
+    const { cartItems, totalPrice } = useCart();
+    const navigate = useNavigate(); // Хук для перехода между страницами
 
     useEffect(() => {
-        // Показываем кнопку "Назад" на этой странице
-        tg.BackButton.show();
-
-        // Обрабатываем событие нажатия на кнопку "Назад"
-        const handleBackButtonClick = () => {
-            navigate(-1); // Возвращаемся на предыдущую страницу
-        };
-
-        tg.BackButton.onClick(handleBackButtonClick);
-
-        return () => {
-            // Скрываем кнопку "Назад", когда покидаем страницу
-            tg.BackButton.hide();
-            tg.BackButton.offClick(handleBackButtonClick);
-        };
-    }, [tg, navigate]);
-
-    useEffect(() => {
-        // Показываем основную кнопку с текстом оплаты
-        tg.MainButton.setParams({
-            text: `Заплатить ${totalPrice}$`,
-            color: '#29B54D',
-        });
-        tg.MainButton.show();
-
-        return () => {
-            tg.MainButton.hide();
-        };
-    }, [tg, totalPrice]);
+        // Даже на странице Checkout кнопка MainButton остаётся активной
+        if (cartItems.length > 0) {
+            tg.MainButton.setParams({
+                text: `Оформить заказ (${totalPrice}$)`, // Обновляем текст с итоговой стоимостью
+            });
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.hide(); // Если корзина пуста, скрываем кнопку
+        }
+    }, [cartItems, totalPrice, tg]);
 
     return (
-        <div className="checkout-page">
-            <h1>Завершение покупки</h1>
-            {cartItems.length > 0 ? (
-                <div>
-                    <h2>Ваши товары:</h2>
-                    <ul>
-                        {cartItems.map((product) => (
-                            <li key={product.id}>
-                                {product.title} — {product.price}$
-                            </li>
-                        ))}
-                    </ul>
-                    <h3>Итоговая сумма: {totalPrice}$</h3>
-                    <p>Для завершения покупки нажмите на кнопку "Заплатить".</p>
-                </div>
-            ) : (
-                <p>Ваша корзина пуста.</p>
-            )}
+        <div className="checkout-container">
+            <h1 className="checkout-title">Оформление заказа</h1>
+            <p className="checkout-summary">Ваш заказ на сумму: <strong>{totalPrice}$</strong></p>
+            <p className="checkout-items-title">Товары:</p>
+            <ul className="checkout-items-list">
+                {cartItems.map((item) => (
+                    <li key={item.id} className="checkout-item">
+                        {item.title} - {item.price}$
+                    </li>
+                ))}
+            </ul>
+            {/* Зеленый текст-кнопка */}
+            <p
+                className="change-button" // Применяем CSS-класс для кнопки
+                onClick={() => navigate('/')} // Переход на главную страницу
+            >
+                Изменить
+            </p>
         </div>
     );
 };
 
-export default CheckoutPage;
+export default Checkout;
