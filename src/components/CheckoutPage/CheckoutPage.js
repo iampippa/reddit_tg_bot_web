@@ -1,21 +1,40 @@
 import React, { useEffect } from 'react';
 import './CheckoutPage.css';
 import { useTelegram } from '../../hooks/useTelegram';
-import { useCart } from '../../contexts/CartContext'; // Используем контекст корзины
+import { useNavigate } from 'react-router-dom'; // Для перехода между страницами
+import { useCart } from '../../contexts/CartContext';
 
 const CheckoutPage = () => {
     const { tg } = useTelegram();
-    const { cartItems, totalPrice } = useCart(); // Достаем товары и сумму из контекста
+    const navigate = useNavigate(); // Хук для переходов
+    const { cartItems, totalPrice } = useCart(); // Получаем товары и сумму из контекста
 
     useEffect(() => {
-        // Показываем кнопку "Заплатить" с суммой, когда пользователь находится на странице Checkout
+        // Показываем кнопку "Назад" на этой странице
+        tg.BackButton.show();
+
+        // Обрабатываем событие нажатия на кнопку "Назад"
+        const handleBackButtonClick = () => {
+            navigate(-1); // Возвращаемся на предыдущую страницу
+        };
+
+        tg.BackButton.onClick(handleBackButtonClick);
+
+        return () => {
+            // Скрываем кнопку "Назад", когда покидаем страницу
+            tg.BackButton.hide();
+            tg.BackButton.offClick(handleBackButtonClick);
+        };
+    }, [tg, navigate]);
+
+    useEffect(() => {
+        // Показываем основную кнопку с текстом оплаты
         tg.MainButton.setParams({
             text: `Заплатить ${totalPrice}$`,
-            color: '#29B54D', // Зеленый цвет кнопки
+            color: '#29B54D',
         });
         tg.MainButton.show();
 
-        // Убираем кнопку, если пользователь уходит со страницы
         return () => {
             tg.MainButton.hide();
         };
@@ -24,7 +43,7 @@ const CheckoutPage = () => {
     return (
         <div className="checkout-page">
             <h1>Завершение покупки</h1>
-            {cartItems.length > 0 ? ( // Проверяем товары в корзине (из контекста)
+            {cartItems.length > 0 ? (
                 <div>
                     <h2>Ваши товары:</h2>
                     <ul>
