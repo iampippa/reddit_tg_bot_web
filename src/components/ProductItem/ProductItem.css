@@ -29,6 +29,6 @@
 }
 
 .add-btn.in-cart {
-    background-color: red; /* Цвет кнопки в состоянии "товар в корзине" */
+    background-color: #E84D44; /* Цвет кнопки в состоянии "товар в корзине" */
     color: white;
 }
