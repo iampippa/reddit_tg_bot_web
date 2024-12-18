@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
-import './ProductItem.css';
-import { useCart } from '../../contexts/CartContext'; // Контекст корзины
+import React, { useMemo } from "react";
+import "./ProductItem.css";
+import { useCart } from "../../contexts/CartContext"; // Контекст корзины
 
 const ProductItem = ({ product }) => {
     const { cartItems, addToCart } = useCart(); // Контекст корзины
-    const [isInCart, setIsInCart] = useState(false); // Проверка, в корзине ли товар
 
-    useEffect(() => {
-        // Проверяем, находится ли товар в корзине
-        const itemInCart = cartItems.some((item) => item.id === product.id);
-        setIsInCart(itemInCart); // Обновляем состояние
-    }, [cartItems, product.id]);
+    // Проверяем, находится ли товар в корзине, но используем useMemo для оптимизации
+    const isInCart = useMemo(
+        () => cartItems.some((item) => item.id === product.id),
+        [cartItems, product.id]
+    );
 
     const handleAddOrRemove = () => {
-        addToCart(product); // Управление добавлением/удалением товара
+        addToCart(product); // Управляем добавлением/удалением товара
     };
 
     return (
@@ -23,7 +22,7 @@ const ProductItem = ({ product }) => {
             <p className="description">{product.description}</p>
             <span>{product.price}$</span>
             <button
-                className={`add-btn ${isInCart ? 'in-cart' : ''}`} // Динамический класс
+                className={`add-btn ${isInCart ? "in-cart" : ""}`} // Динамический класс
                 onClick={handleAddOrRemove}
             >
                 {isInCart ? "Удалить" : "Добавить"} {/* Изменение текста кнопки */}

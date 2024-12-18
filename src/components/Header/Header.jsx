@@ -8,7 +8,7 @@ const Header = () => {
 
     return (
         <div className={'header'}>
-            <span className={'title'}>Я гей 4</span>
+            <span className={'title'}>Я гей 5</span>
             <span className={'username'}>
                 {user?.username}
             </span>

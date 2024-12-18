@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import "./ProductList.css";
 import ProductItem from "../ProductItem/ProductItem";
 import { useTelegram } from "../../hooks/useTelegram";
@@ -17,33 +17,28 @@ const ProductList = () => {
     const { cartItems, totalPrice } = useCart();
     const navigate = useNavigate();
 
-    // Логика для инициализации кнопки
-    const setupMainButton = () => {
+    const setupMainButton = useCallback(() => {
         if (cartItems.length > 0) {
-            // Если в корзине есть товары, показываем кнопку
             tg.MainButton.setParams({
                 text: `Посмотреть заказ (${totalPrice}$)`,
                 color: "#29B54D",
             });
             tg.MainButton.show();
         } else {
-            // Скрываем кнопку, если корзина пуста
             tg.MainButton.hide();
         }
-    };
+    }, [cartItems.length, totalPrice, tg.MainButton]);
 
     useEffect(() => {
-        // При загрузке/рендере страницы устанавливаем MainButton
+        // Устанавливаем MainButton при монтировании и обновлении корзины
         setupMainButton();
 
-        // Подписываемся на нажатие кнопки
         tg.onEvent("mainButtonClicked", () => navigate("/checkout"));
 
         return () => {
-            // Удаляем обработчики при размонтировании
             tg.offEvent("mainButtonClicked", () => navigate("/checkout"));
         };
-    }, [cartItems, totalPrice, tg, navigate]);
+    }, [setupMainButton, tg, navigate]);
 
     return (
         <div className="list">
