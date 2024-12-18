@@ -6,17 +6,17 @@ import { Route, Routes } from 'react-router-dom';
 import ProductList from "./components/ProductList/ProductList";
 import Form from "./components/Form/Form";
 import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
-import { CartProvider } from './contexts/CartContext'; // Новый контекст корзины
+import { CartProvider } from './contexts/CartContext'; // Импортируем контекст корзины
 
 function App() {
     const { tg } = useTelegram();
 
     useEffect(() => {
         tg.ready();
-    }, []);
+    }, [tg]);
 
     return (
-        <CartProvider>
+        <CartProvider> {/* Оборачиваем приложение в CartProvider */}
             <div className="App">
                 <Header />
                 <Routes>
