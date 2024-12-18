@@ -5,14 +5,14 @@ import {useTelegram} from "../../hooks/useTelegram";
 import {useCallback, useEffect} from "react";
 
 const products = [
-        {id: '1', title: 'Amanda', price: 40, description: 'Post Karma: 3214, Comment Karma: 312'},
-    {id: '2', title: 'Julia', price: 40, description: 'Зеленого цвета, теплая'},
-    {id: '3', title: 'Maria', price: 40, description: 'Синего цвета, прямые'},
-    {id: '4', title: 'Anna', price: 40, description: 'Зеленого цвета, теплая'},
-    {id: '5', title: 'Julia', price: 40, description: 'Синего цвета, прямые'},
-    {id: '6', title: 'Куртка 7', price: 40, description: 'Зеленого цвета, теплая'},
-    {id: '7', title: 'Джинсы 4', price: 40, description: 'Синего цвета, прямые'},
-    {id: '8', title: 'Куртка 5', price: 40, description: 'Зеленого цвета, теплая'},
+        {id: '1', title: 'Amanda', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
+    {id: '2', title: 'Julia', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
+    {id: '3', title: 'Maria', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
+    {id: '4', title: 'Anna', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
+    {id: '5', title: 'Julia', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
+    {id: '6', title: 'Куртка 7', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
+    {id: '7', title: 'Джинсы 4', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
+    {id: '8', title: 'Куртка 5', price: 40, description: 'Post Karma: 3214 Comment Karma: 312 Date: 17.02.2021'},
 ]
 
 const getTotalPrice = (items = []) => {
