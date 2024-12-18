@@ -8,6 +8,7 @@ const Header = () => {
 
     return (
         <div className={'header'}>
+            <span className={'title'}>Я гей</span>
             <span className={'username'}>
                 {user?.username}
             </span>
