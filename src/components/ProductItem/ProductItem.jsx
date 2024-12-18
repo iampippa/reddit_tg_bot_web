@@ -1,24 +1,24 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import './ProductItem.css';
 import { useCart } from '../../contexts/CartContext'; // Контекст корзины
 
 const ProductItem = ({ product }) => {
     const { cartItems, addToCart } = useCart(); // Контекст корзины
+    const [isInCart, setIsInCart] = useState(false); // Проверка, в корзине ли товар
 
-    // Определяем, находится ли товар в корзине
-    const isInCart = useMemo(() => {
-        return cartItems.some((item) => item.id === product.id);
+    useEffect(() => {
+        // Проверяем, находится ли товар в корзине
+        const itemInCart = cartItems.some((item) => item.id === product.id);
+        setIsInCart(itemInCart); // Обновляем состояние
     }, [cartItems, product.id]);
 
     const handleAddOrRemove = () => {
-        addToCart(product); // Управляем добавлением/удалением товара
+        addToCart(product); // Управление добавлением/удалением товара
     };
-
-    console.log(`Product ${product.id} is in cart: ${isInCart}`); // для отладки
 
     return (
         <div className="product">
-            <div className="img"></div>
+            <div className="img" />
             <h3>{product.title}</h3>
             <p className="description">{product.description}</p>
             <span>{product.price}$</span>

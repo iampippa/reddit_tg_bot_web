@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './ProductList.css';
 import ProductItem from "../ProductItem/ProductItem";
 import { useTelegram } from "../../hooks/useTelegram";
-import { useCart } from '../../contexts/CartContext';
+import { useCart } from '../../contexts/CartContext'; // Контекст корзины
 import { useNavigate } from 'react-router-dom';
 
 const products = [
@@ -17,36 +17,54 @@ const ProductList = () => {
     const { cartItems, totalPrice } = useCart();
     const navigate = useNavigate();
 
+    // Ref для отслеживания состояния кнопки
+    const isMainButtonInitialized = useRef(false);
+
     useEffect(() => {
-        // Обновляем MainButton, только если корзина готова (чтобы избежать дребезга)
-        const timeout = setTimeout(() => {
-            if (cartItems.length > 0) {
+        if (cartItems.length > 0) {
+            // Если кнопка ещё не инициализирована — показываем её
+            if (!isMainButtonInitialized.current) {
                 tg.MainButton.setParams({
                     text: `Посмотреть заказ (${totalPrice}$)`,
                     color: "#29B54D",
                 });
                 tg.MainButton.show();
+                isMainButtonInitialized.current = true; // Помечаем, что кнопка инициализирована
             } else {
-                tg.MainButton.hide();
+                // Обновляем текст, если кнопка уже видна
+                tg.MainButton.setParams({
+                    text: `Посмотреть заказ (${totalPrice}$)`
+                });
             }
-        }, 50); // Задержка для исключения промежуточных состояний
-
-        return () => clearTimeout(timeout); // Очищаем таймаут при размонтировании
+        } else {
+            // Скрываем кнопку, только если она была инициализирована
+            if (isMainButtonInitialized.current) {
+                tg.MainButton.hide();
+                isMainButtonInitialized.current = false; // Сбрасываем состояние
+            }
+        }
     }, [cartItems, totalPrice, tg]);
 
+    const onSendData = () => {
+        navigate('/checkout'); // Переход на страницу Checkout
+    };
+
     useEffect(() => {
-        tg.onEvent('mainButtonClicked', () => navigate('/checkout'));
+        // Обработка события нажатия кнопки
+        tg.onEvent('mainButtonClicked', onSendData);
+
         return () => {
-            tg.offEvent('mainButtonClicked', () => navigate('/checkout'));
+            // Удаляем обработчик при размонтировании компонента
+            tg.offEvent('mainButtonClicked', onSendData);
         };
-    }, [tg, navigate]);
+    }, [onSendData, tg]);
 
     return (
         <div className="list">
             {products.map((item) => (
                 <ProductItem
                     key={item.id}
-                    product={item}
+                    product={item} // Передача данных о продукте
                 />
             ))}
         </div>
