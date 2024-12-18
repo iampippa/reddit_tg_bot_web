@@ -25,3 +25,7 @@
     font-size: 12px;
     background-color: #F9A92A;
 }
+
+.add-btn:focus {
+    background-color: red;
+}
