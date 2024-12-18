@@ -26,6 +26,6 @@
     background-color: #F9A92A;
 }
 
-.add-btn:focus {
-    background-color: red;
+.add-btn:active {
+    background-color: #111111;
 }
