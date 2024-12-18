@@ -24,8 +24,11 @@
     border-radius: 6px;
     font-size: 12px;
     background-color: #F9A92A;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
-.add-btn:active {
-    background-color: #111111;
+.add-btn.in-cart {
+    background-color: red; /* Цвет кнопки в состоянии "товар в корзине" */
+    color: white;
 }
