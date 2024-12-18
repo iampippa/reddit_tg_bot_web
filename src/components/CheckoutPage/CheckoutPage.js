@@ -109,10 +109,10 @@ const CheckoutPage = () => {
                             value={paymentMethod}
                             onChange={(e) => setPaymentMethod(e.target.value)}
                         >
-                            <option value="">-- Выберите способ оплаты --</option>
-                            <option value="cryptomus">Cryptomus (USDT)</option>
-                            <option value="card">Банковская карта</option>
-                            <option value="qiwi">Qiwi</option>
+                            <option value="">Выберите способ оплаты</option>
+                            <option value="crypto">Криптовалюта</option>
+                            <option value="binance">Binance Pay</option>
+                            <option value="paypal">Paypal</option>
                         </select>
                     </div>
 
