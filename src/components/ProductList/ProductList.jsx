@@ -17,57 +17,33 @@ const ProductList = () => {
     const { cartItems, totalPrice } = useCart();
     const navigate = useNavigate();
 
-    /**
-     * Обновление кнопки: показываем, скрываем или изменяем параметры.
-     */
-    const updateMainButton = () => {
+    // Логика для инициализации кнопки
+    const setupMainButton = () => {
         if (cartItems.length > 0) {
-            // Обновляем текст кнопки
+            // Если в корзине есть товары, показываем кнопку
             tg.MainButton.setParams({
                 text: `Посмотреть заказ (${totalPrice}$)`,
                 color: "#29B54D",
             });
-
-            if (!tg.MainButton.isVisible) {
-                tg.MainButton.show(); // Показываем кнопку только если она скрыта
-            }
+            tg.MainButton.show();
         } else {
-            // Скрываем кнопку, если в корзине ничего нет
-            if (tg.MainButton.isVisible) {
-                tg.MainButton.hide();
-            }
+            // Скрываем кнопку, если корзина пуста
+            tg.MainButton.hide();
         }
     };
 
     useEffect(() => {
-        // При монтировании сразу обновляем кнопку
-        updateMainButton();
+        // При загрузке/рендере страницы устанавливаем MainButton
+        setupMainButton();
 
-        // Обработка возвращения назад (если пользователь вернулся со страницы)
-        const handleBackButton = () => {
-            updateMainButton(); // Гарантируем, что кнопка обновится при возврате
-        };
-
-        tg.onEvent("navigatorBackButtonClicked", handleBackButton);
+        // Подписываемся на нажатие кнопки
+        tg.onEvent("mainButtonClicked", () => navigate("/checkout"));
 
         return () => {
-            tg.offEvent("navigatorBackButtonClicked", handleBackButton);
+            // Удаляем обработчики при размонтировании
+            tg.offEvent("mainButtonClicked", () => navigate("/checkout"));
         };
-    }, [cartItems, totalPrice, tg]);
-
-    const onSendData = () => {
-        navigate("/checkout"); // Переход на страницу Checkout
-    };
-
-    useEffect(() => {
-        // Добавляем обработчик нажатия кнопки
-        tg.onEvent("mainButtonClicked", onSendData);
-
-        return () => {
-            // Убираем обработчик при размонтировании
-            tg.offEvent("mainButtonClicked", onSendData);
-        };
-    }, [onSendData, tg]);
+    }, [cartItems, totalPrice, tg, navigate]);
 
     return (
         <div className="list">
