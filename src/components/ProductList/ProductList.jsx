@@ -14,24 +14,31 @@ const products = [
 
 const ProductList = () => {
     const { tg } = useTelegram();
-    const { cartItems, totalPrice } = useCart(); // Контекст корзины
+    const { cartItems, totalPrice } = useCart();
     const navigate = useNavigate();
 
+    // Следим за состоянием корзины и кнопки
     useEffect(() => {
-        // Обновляем параметры MainButton, только если количество товаров изменилось
+        // Проверяем, нужно ли что-то менять с кнопкой
         if (cartItems.length > 0) {
-            // Если кнопка уже видна — не трогаем её
-            if (!tg.MainButton.isVisible) {
+            // Если кнопка уже видна, обновляем только текст
+            if (tg.MainButton.isVisible) {
+                tg.MainButton.setParams({
+                    text: `Посмотреть заказ (${totalPrice}$)`,
+                });
+            } else {
+                // Если кнопка НЕ видна, показываем её с новым текстом
+                tg.MainButton.setParams({
+                    text: `Посмотреть заказ (${totalPrice}$)`,
+                    color: "#29B54D",
+                });
                 tg.MainButton.show();
             }
-
-            tg.MainButton.setParams({
-                text: `Посмотреть заказ (${totalPrice}$)`,
-                color: "#29B54D",
-            });
         } else {
-            // Скрываем кнопку только если товаров нет
-            tg.MainButton.hide();
+            // Если товаров в корзине нет, скрываем кнопку (только если она была видна)
+            if (tg.MainButton.isVisible) {
+                tg.MainButton.hide();
+            }
         }
     }, [cartItems, totalPrice, tg]);
 
@@ -44,7 +51,7 @@ const ProductList = () => {
         tg.onEvent('mainButtonClicked', onSendData);
 
         return () => {
-            // Очищаем обработчик при размонтировании
+            // Удаляем обработчик при размонтировании
             tg.offEvent('mainButtonClicked', onSendData);
         };
     }, [onSendData, tg]);
