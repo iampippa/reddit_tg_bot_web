@@ -1,48 +1,70 @@
-/* Контейнер страницы */
-.checkout-container {
+/* Общие стили страницы */
+.checkout-page {
+    max-width: 800px;
+    margin: 50px auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Светлый фон */
+    border: 1px solid #ddd; /* Тонкая граница */
+    border-radius: 10px; /* Скругленные углы */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* Тень для объема */
 }
 
-/* Заголовок страницы */
-.checkout-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-/* Подсказка с общей стоимостью */
-.checkout-summary {
-    font-size: 18px;
-    margin-bottom: 15px;
-}
-
-/* Товары */
-.checkout-items-title {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.checkout-items-list {
-    list-style: none;
-    padding-left: 0;
+.checkout-page h1 {
+    font-size: 2rem;
+    color: #333; /* Темный цвет текста */
+    text-align: center; /* Центрирование заголовка */
     margin-bottom: 20px;
 }
 
-.checkout-item {
-    font-size: 16px;
-    margin-bottom: 8px;
+.checkout-page h2 {
+    font-size: 1.5rem;
+    color: #555;
+    margin-bottom: 15px;
 }
 
-/* Стили "Изменить" кнопки */
+.checkout-page h3 {
+    font-size: 1.2rem;
+    color: #29b54d; /* Заметный зеленый цвет итоговой суммы */
+    text-align: right; /* Выравнивание суммы вправо */
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.checkout-page p {
+    font-size: 1rem;
+    color: #888; /* Серый цвет текста */
+    text-align: center;
+}
+
+.checkout-page ul {
+    list-style-type: none; /* Убираем стандартные маркеры списка */
+    padding: 0;
+}
+
+.checkout-page li {
+    font-size: 1rem;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee; /* Линия-разделитель */
+    display: flex;
+    justify-content: space-between; /* Текст и цена по краям */
+    color: #444;
+}
+
+.checkout-page li:last-child {
+    border-bottom: none; /* Убираем нижнюю линию у последнего элемента */
+}
+
+/* Стили для текстовой кнопки "Изменить" */
 .change-button {
-    color: #29B54D; /* Зеленый цвет */
-    cursor: pointer; /* Указываем, что элемент кликабельный */
-    text-decoration: underline; /* Подчеркиваем текст */
-    font-weight: bold; /* Делаем текст жирным */
+    color: #29B54D; /* Зеленый цвет текста */
+    font-weight: bold; /* Жирный текст */
+    text-decoration: underline; /* Подчеркивание текста, как у ссылки */
+    cursor: pointer; /* Указатель выделить как ссылку */
+    margin-top: 20px; /* Отступ сверху */
+    text-align: center; /* Центрируем текст */
 }
 
 .change-button:hover {
-    opacity: 0.8; /* Лёгкая прозрачность при наведении */
+    opacity: 0.8; /* Эффект затемнения при наведении */
+    transition: opacity 0.3s ease; /* Плавность эффекта */
 }
