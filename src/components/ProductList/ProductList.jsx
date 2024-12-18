@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './ProductList.css';
 import ProductItem from "../ProductItem/ProductItem";
 import { useTelegram } from "../../hooks/useTelegram";
-import { useCart } from '../../contexts/CartContext'; // Контекст корзины
+import { useCart } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 
 const products = [
@@ -14,33 +14,38 @@ const products = [
 
 const ProductList = () => {
     const { tg } = useTelegram();
-    const { cartItems, totalPrice } = useCart(); // Получаем список товаров в корзине и итоговую сумму
+    const { cartItems, totalPrice } = useCart(); // Контекст корзины
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Обновляем текст и параметры кнопки при изменении корзины
-        tg.MainButton.setParams({
-            text: cartItems.length > 0 ? `Посмотреть заказ (${totalPrice}$)` : "Корзина пустая",
-            color: "#29B54D",
-        });
+        // Обновляем параметры MainButton, только если количество товаров изменилось
+        if (cartItems.length > 0) {
+            // Если кнопка уже видна — не трогаем её
+            if (!tg.MainButton.isVisible) {
+                tg.MainButton.show();
+            }
 
-        // Показываем кнопку, если её ещё нет
-        if (!tg.MainButton.isVisible) {
-            tg.MainButton.show();
+            tg.MainButton.setParams({
+                text: `Посмотреть заказ (${totalPrice}$)`,
+                color: "#29B54D",
+            });
+        } else {
+            // Скрываем кнопку только если товаров нет
+            tg.MainButton.hide();
         }
-
     }, [cartItems, totalPrice, tg]);
 
     const onSendData = () => {
-        navigate('/checkout'); // Переход к странице завершения покупки
+        navigate('/checkout'); // Переход на страницу Checkout
     };
 
     useEffect(() => {
-        // Обработка клика на MainButton
+        // Добавляем обработчик клика
         tg.onEvent('mainButtonClicked', onSendData);
 
         return () => {
-            tg.offEvent('mainButtonClicked', onSendData); // Очищаем обработчик при размонтировании
+            // Очищаем обработчик при размонтировании
+            tg.offEvent('mainButtonClicked', onSendData);
         };
     }, [onSendData, tg]);
 
@@ -49,7 +54,7 @@ const ProductList = () => {
             {products.map((item) => (
                 <ProductItem
                     key={item.id}
-                    product={item} // Передача данных о каждом продукте
+                    product={item} // Передача данных о продукте
                 />
             ))}
         </div>
