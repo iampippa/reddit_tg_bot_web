@@ -1,4 +1,11 @@
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
+
+[functions]
+directory = "netlify/functions" # Указываем путь к папке с серверными функциями
+
+[build]
+command = "npm run build"       # Команда сборки вашего проекта React
+publish = "build"              # Указываем папку, где будет собранный проект React
