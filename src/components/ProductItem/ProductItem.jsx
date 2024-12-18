@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import Button from "../Button/Button";
+import React, { useEffect, useState } from "react";
 import './ProductItem.css';
+import { useCart } from '../../contexts/CartContext'; // Используем контекст корзины
 
-const ProductItem = ({ product, className, onAdd }) => {
+const ProductItem = ({ product }) => {
+    const { cartItems, addToCart } = useCart(); // Получаем данные корзины и метод добавления
     const [isInCart, setIsInCart] = useState(false); // Локальное состояние кнопки
 
-    const onAddHandler = () => {
-        setIsInCart(!isInCart); // Переключение состояния кнопки
-        onAdd(product); // Вызов переданного метода "onAdd"
-    }
+    useEffect(() => {
+        // Проверяем, если товар находится в корзине, обновляем локальное состояние
+        const itemInCart = cartItems.some((item) => item.id === product.id);
+        setIsInCart(itemInCart);
+    }, [cartItems, product.id]); // Проверка выполняется при изменении корзины или id товара
+
+    const handleAddOrRemove = () => {
+        addToCart(product); // Добавляем или удаляем товар из корзины
+    };
 
     return (
-        <div className={'product ' + className}>
-            <div className={'img'} />
-            <div className={'title'}>{product.title}</div>
-            <div className={'description'}>{product.description}</div>
-            <div className={'price'}>
-                <span>Цена: <b>{product.price}$</b></span>
-            </div>
-            <Button
-                className={`add-btn ${isInCart ? 'in-cart' : ''}`} // Динамическое добавление класса кнопке
-                onClick={onAddHandler}
-            >
-                {isInCart ? 'Удалить' : 'Добавить'} {/* Динамический текст кнопки */}
-            </Button>
+        <div className="product-item">
+            <h3>{product.title}</h3>
+            <p>{product.description}</p>
+            <span>{product.price}$</span>
+            <button onClick={handleAddOrRemove}>
+                {isInCart ? "Удалить" : "Добавить"} {/* Обновление кнопки */}
+            </button>
         </div>
     );
 };
